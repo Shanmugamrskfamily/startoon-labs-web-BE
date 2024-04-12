@@ -13,8 +13,6 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-app.use('/',async function(req,res){
-    res.send("Welcome To Backend of my Web Application.. Server is running Good.")
-});
+
 
 app.use('/auth',authRouter);
