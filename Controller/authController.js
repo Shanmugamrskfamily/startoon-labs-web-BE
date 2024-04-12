@@ -5,7 +5,7 @@ const User = require('../Models/userModel');
 
 async function signup(req, res) {
     try {
-        const { name, password, email, gender } = req.body;
+        const { name, password, email, gender,role } = req.body;
 
         // Data validation
         if (!validator.isEmail(email)) {
@@ -29,7 +29,8 @@ async function signup(req, res) {
             name,
             password: hashedPassword,
             email,
-            gender
+            gender,
+            role
         });
 
         // Save the user to the database
@@ -65,20 +66,20 @@ async function login(req, res) {
         }
 
 // Update login dates and counts
-const today = new Date().toDateString();
-const lastLoginDate = user.lastLogin ? user.lastLogin.toDateString() : null;
+if (user.role !== 'Admin') {
+    const today = new Date().toDateString();
+    const lastLoginDate = user.lastLogin ? user.lastLogin.toDateString() : null;
 
-if (lastLoginDate !== today) {
-    user.loginCounts.push({ loginDate: user.lastLogin, count: 1 });
-} else {
-    // Find the index of the login count for today's date
-    const index = user.loginCounts.findIndex(entry => entry.loginDate.toDateString() === today);
-
-    // If today's login count entry exists, increment the count; otherwise, add a new entry
-    if (index !== -1) {
-        user.loginCounts[index].count += 1;
-    } else {
+    if (lastLoginDate !== today) {
         user.loginCounts.push({ loginDate: user.lastLogin, count: 1 });
+    } else {
+        const index = user.loginCounts.findIndex(entry => entry.loginDate.toDateString() === today);
+
+        if (index !== -1) {
+            user.loginCounts[index].count += 1;
+        } else {
+            user.loginCounts.push({ loginDate: user.lastLogin, count: 1 });
+        }
     }
 }
 
@@ -102,12 +103,8 @@ async function changePassword(req, res) {
         const email=req.user.email;
         const { currentPassword, newPassword } = req.body;
 
-        console.log(email);
 
         // Data validation
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({ message: "Invalid email format" });
-        }
         if (!validator.isStrongPassword(newPassword, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
             return res.status(400).json({ message: "New password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 symbol, and be at least 8 characters long" });
         }

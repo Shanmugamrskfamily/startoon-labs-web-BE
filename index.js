@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB=require('./Configuration/database');
 const authRouter = require('./Routes/authRoutes');
+const adminRouter = require('./Routes/adminRoutes');
 require('dotenv').config();
 
 const PORT =process.env.PORT || 4500;
@@ -16,3 +17,4 @@ app.listen(PORT, () => {
 
 
 app.use('/auth',authRouter);
+app.use('/admin',adminRouter);
