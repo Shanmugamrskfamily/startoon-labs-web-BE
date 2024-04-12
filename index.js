@@ -1,11 +1,22 @@
 const express = require('express');
 const connectDB = require('./Configuration/database');
+const cors = require('cors');
 const authRouter = require('./Routes/authRoutes');
 const adminRouter = require('./Routes/adminRoutes');
+
 require('dotenv').config();
+const app = express();
 
 const PORT = process.env.PORT || 4500;
-const app = express();
+
+const corsOptions = {
+    origin: [`http://localhost:${PORT}`, `http://localhost:5173`],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+  };
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 connectDB();
