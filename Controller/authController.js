@@ -11,8 +11,8 @@ async function signup(req, res) {
         if (!validator.isEmail(email)) {
             return res.status(400).json({ message: "Invalid email format" });
         }
-        if (!validator.isStrongPassword(password, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
-            return res.status(400).json({ message: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 symbol, and be at least 8 characters long" });
+        if (!validator.isStrongPassword(password, { minLength: 8, maxLength: 12, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
+            return res.status(400).json({ message: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 symbol, and be between 8 and 12 characters long" });
         }
         
         // Check if the email is already registered
@@ -104,8 +104,8 @@ async function changePassword(req, res) {
 
 
         // Data validation
-        if (!validator.isStrongPassword(newPassword, { minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
-            return res.status(400).json({ message: "New password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 symbol, and be at least 8 characters long" });
+        if (!validator.isStrongPassword(password, { minLength: 8, maxLength: 12, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
+            return res.status(400).json({ message: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 symbol, and be between 8 and 12 characters long" });
         }
 
         // Find the user by email
