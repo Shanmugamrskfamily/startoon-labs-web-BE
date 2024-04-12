@@ -5,7 +5,7 @@ const User = require('../Models/userModel');
 
 async function signup(req, res) {
     try {
-        const { name, password, email, gender,role } = req.body;
+        const { name, password, email, gender } = req.body;
 
         // Data validation
         if (!validator.isEmail(email)) {
@@ -30,7 +30,6 @@ async function signup(req, res) {
             password: hashedPassword,
             email,
             gender,
-            role
         });
 
         // Save the user to the database
