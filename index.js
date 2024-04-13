@@ -3,6 +3,7 @@ const connectDB = require('./Configuration/database');
 const cors = require('cors');
 const authRouter = require('./Routes/authRoutes');
 const adminRouter = require('./Routes/adminRoutes');
+const userRouter = require('./Routes/userRoutes');
 
 require('dotenv').config();
 const app = express();
@@ -33,3 +34,4 @@ app.get('/', async function(req, res) {
 // Define routes for authentication and admin
 app.use('/auth', authRouter);
 app.use('/admin', adminRouter);
+app.use('/user',userRouter);

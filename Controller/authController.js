@@ -86,7 +86,7 @@ user.lastLogin = new Date();
 await user.save();
 
         // Generate JWT token
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '3h' });
 
         res.status(200).json({ token, user });
     } catch (error) {
@@ -104,7 +104,7 @@ async function changePassword(req, res) {
 
 
         // Data validation
-        if (!validator.isStrongPassword(password, { minLength: 8, maxLength: 12, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
+        if (!validator.isStrongPassword(newPassword, { minLength: 8, maxLength: 12, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })) {
             return res.status(400).json({ message: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 symbol, and be between 8 and 12 characters long" });
         }
 

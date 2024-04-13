@@ -33,28 +33,56 @@ async function getUserLoginActivity(req, res) {
             return res.status(403).json({ message: 'Access denied. Only Admin users can access this resource.' });
         }
 
+        // Calculate the date 15 days ago
+        const fifteenDaysAgo = new Date();
+        fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 15);
+
         // Aggregate login counts by date
         const loginActivity = await User.aggregate([
-            {
-                $unwind: '$loginCounts' // Flatten the loginCounts array
-            },
+            // Unwind the loginCounts array
+            { $unwind: '$loginCounts' },
+
+            // Match login dates within the last 15 days
+            { $match: { 'loginCounts.loginDate': { $gte: fifteenDaysAgo } } },
+
+            // Group by date and sum up login counts
             {
                 $group: {
                     _id: { $dateToString: { format: '%Y-%m-%d', date: '$loginCounts.loginDate' } },
                     totalLoginCounts: { $sum: '$loginCounts.count' }
                 }
             },
-            {
-                $sort: { _id: 1 } // Sort by date in ascending order
-            }
+
+            // Sort by date in ascending order
+            { $sort: { _id: 1 } }
         ]);
 
-        res.status(200).json({ loginActivity });
+        // Create an object to store login counts for the last 15 days
+        const loginActivityMap = new Map();
+        loginActivity.forEach(entry => {
+            loginActivityMap.set(entry._id, entry.totalLoginCounts);
+        });
+
+        // Generate an array of dates for the last 15 days
+        const last15Days = Array.from({ length: 15 }, (_, index) => {
+            const date = new Date();
+            date.setDate(date.getDate() - index);
+            return date.toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+        });
+
+        // Fill in missing dates with a login count of 0
+        const last15DaysData = last15Days.map(date => ({
+            _id: date,
+            totalLoginCounts: loginActivityMap.get(date) || 0
+        }));
+
+        res.status(200).json({ loginActivity: last15DaysData });
     } catch (error) {
         console.error('Error getting user login activity:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
 
 
 async function getUserStats(req, res) {
