@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 4500;
 
 const corsOptions = {
-    origin: [`http://localhost:${PORT}`, `https://startoons-web-app.netlify.app/`],
+    origin: [`http://localhost:${PORT}`, `https://startoons-web-app.netlify.app`],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,
